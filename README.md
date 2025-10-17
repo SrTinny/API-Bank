@@ -1,31 +1,89 @@
 Trabalho 1
 
 Aluno: João Victor Cardoso Duarte
-Matricula:
+Matrícula:
 
-  Ao iniciar o programa aparecerá uma tela dando boas vindas, em seguida para fins de cadastro uma outra tela solicitando informações para conta comum, poupança e especial.
-  
-Ao realizar o cadastro aparecerá uma tela de operações com os seguintes botões:
-  
-  1. Saque
-  2. Depósito
-  3. Transferência
-  4. Reajustar
-  5. Ver saldos
-  6. Finalizar
-  
-  1. Se escolhido saque, será exibida uma outra tela para que seja digitado o número da conta e o valor desejado para saque. O sistema vai verificar se o saldo é maior que o valor desejado para saque. Logo em seguida vai aparecer uma mensagem de confirmação caso seja possível a realização do saque. A diante, se a confirmação for positiva, vai aparecer uma mensagem de saque realizado informando o saldo atual.
-  
-Detalhe: Caso não haja saldo suficiente, o sistema vai verificar se o valor de saldo + limite permite o saque. Se for possível, irá informar “Saque efetuado usando cheque especial”, atualizando o valor do saldo com uma multa especificada sobre o valor utilizado do cheque especial.
+Resumo do projeto
+-----------------
+Aplicação Java (Spring Boot) que simula operações bancárias básicas com contas: Conta Comum, Conta Poupança e Conta Especial. A interface e fluxo esperado são descritos abaixo.
 
-Detalhe: Caso o saque solicitado seja um valor acima do saldo + limite, será informado “Saldo insuficiente”. O sistema deve voltará para a tela de Operações.
+Fluxo de uso
+------------
+- Ao iniciar o programa, uma tela de boas-vindas aparece e, em seguida, telas para cadastro de contas (comum, poupança e especial).
+- Após o cadastro, a tela de Operações apresenta os botões:
+  1) Saque
+  2) Depósito
+  3) Transferência
+  4) Reajustar
+  5) Ver saldos
+  6) Finalizar
 
-  2.	se escolhido Depósito, vai ser exibido uma tela para que seja digitado o número da conta e o valor de depósito. Vai aparecer uma mensagem de confirmação informando o nome do titular dessa conta. Logo em seguida vai aparecer mensagem informando que a opção escolhida foi concretizada e encerrará a operação de depósito, voltando para a tela de Operações.
+- Comportamento resumido:
+  - Saque: solicita número da conta e valor; verifica saldo e, se necessário, utiliza limite (cheque especial) aplicando multa quando usado.
+  - Depósito: solicita número da conta e valor; confirma titular e atualiza saldo.
+  - Transferência: solicita contas origem/destino e valor; realiza transferência quando aplicável.
+  - Reajustar: aplica taxa (padrão 10% se não informada) à conta poupança.
+  - Ver saldos: mostra saldos atualizados.
+  - Finalizar: encerra o programa.
 
-  3.	se escolhida Transferência, aparecerá  duas telas uma seguida da outra solicitando os números das contas envolvidas e o valor a ser transferido respectivamente. Log em seguida vai aparecer uma mensagem informando que a opção escolhida foi concretizada e encerrando a operação de transferência. Em seguida, o sistema vai voltar para a tela deOperações
+Requisitos de desenvolvimento (upgrade Java)
+-----------------------------------------
+- Este projeto foi atualizado para usar Java 21 (LTS).
+- Requisitos locais:
+  - Java 21 JDK (Eclipse Temurin / Adoptium recomendado) — necessário para compilar e executar.
+  - Maven (o projeto usa o Maven Wrapper `mvnw`, portanto maven não precisa estar instalado globalmente).
 
-  4.	se escolhida Reajustar, o sistema vai perguntar com qual taxa é o reajuste deve ser aplicado; caso o usuário não digite a taxa, será assumido o valor padrão de reajuste (0.1 = 10%), e finalmente o programa informará  que o ajuste foi realizado, e atualizará o saldo da conta poupança. O sistema vai voltar para a tela de Operações
+Instalação rápida do JDK 21 (sem privilégios de administrador)
+-------------------------------------------------------------
+Há um script auxiliar em `backend/scripts/install-jdk21.ps1` que baixa e extrai o Temurin JDK 21 para a pasta do usuário (`%USERPROFILE%\.jdk\jdk-21`). Exemplo de uso no PowerShell (executar na pasta `backend/scripts`):
 
-  5. se escolhido Ver saldos, todos os saldos atualizados dos correntistas serão exibidos em uma pequena janela gráfica e, após o pressionar um botão “ok”, o sistema vai voltar para a tela de Operações
+```powershell
+.\install-jdk21.ps1
+```
 
-  6. Ao clicar no botão Finalizar o programa será fechado encerrando todas as ações.
+Configurar Maven Toolchains (opcional)
+------------------------------------
+Para garantir que o Maven use JDK 21, crie (ou atualize) o arquivo `%USERPROFILE%\.m2\toolchains.xml` com o caminho para o JDK instalado. Exemplo:
+
+```xml
+<toolchains>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>21</version>
+      <vendor>eclipse-adoptium</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>C:\\Users\\<seu_usuario>\\.jdk\\jdk-21</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>
+```
+
+Alternativa: exporte temporariamente `JAVA_HOME` apontando para o JDK21 antes de executar o Maven (ex.: em PowerShell):
+
+```powershell
+$inner = Get-ChildItem "$env:USERPROFILE\.jdk\jdk-21" -Directory | Select-Object -First 1
+$env:JAVA_HOME = $inner.FullName
+$env:PATH = "$env:JAVA_HOME\bin;" + $env:PATH
+```
+
+Como construir e executar o projeto
+----------------------------------
+No diretório `backend`:
+
+```powershell
+cd backend
+.\mvnw.cmd -DskipTests package   # gera o jar
+java -jar target\demo-0.0.1-SNAPSHOT.jar
+```
+
+Observações
+-----------
+- Fiz alterações de compatibilidade para Java 21 no POM (`maven-compiler-plugin` com `<release>21` e `maven-toolchains-plugin`) e corrigi a classe principal `BankApiApplication` para que o Spring Boot consiga empacotar o jar executável.
+- Se for necessário, posso commitar essas mudanças e criar um pull request.
+
+Contato
+-------
+Aluno: João Victor Cardoso Duarte
+
