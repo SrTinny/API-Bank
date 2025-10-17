@@ -90,6 +90,27 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<!-- Optional: toolchains plugin to require/use JDK 21 if present on developer machine -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-toolchains-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>toolchain</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<toolchains>
+						<jdk>
+							<version>21</version>
+							<vendor>eclipse-adoptium</vendor>
+						</jdk>
+						</toolchains>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
