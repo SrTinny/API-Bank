@@ -1,3 +1,14 @@
+# Maven
+/target/
+/logs/
+
+# IDE
+.idea/
+*.iml
+
+# Eclipse
+.classpath
+.project
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
