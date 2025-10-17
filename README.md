@@ -1,9 +1,4 @@
-Trabalho 1
 
-Aluno: João Victor Cardoso Duarte
-Matrícula:
-
-Resumo do projeto
 -----------------
 Aplicação Java (Spring Boot) que simula operações bancárias básicas com contas: Conta Comum, Conta Poupança e Conta Especial. A interface e fluxo esperado são descritos abaixo.
 
