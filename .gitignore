@@ -1,0 +1,24 @@
+.DS_Store
+.env
+.idea/
+.vscode/
+*.iml
+
+# Node
+node_modules/
+
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+mobile/.expo-shared/
+mobile/dist/
+mobile/build/
+mobile/.vscode/
+
+# Java / Maven
+**/target/
+**/build/
+*.log
+
+# Mac
+.DS_Store

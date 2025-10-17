@@ -1,0 +1,19 @@
+# Node
+node_modules/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+android/
+ios/
+dist/
+build/
+
+# Local env
+.env
+
+# IDE
+.vscode/
+
+# Yarn
+yarn-error.log
