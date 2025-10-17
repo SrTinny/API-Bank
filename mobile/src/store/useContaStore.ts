@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { Conta } from '../types/bank';
 
 type ContaState = {
@@ -10,7 +10,7 @@ type ContaState = {
 export const useContaStore = create<ContaState>((set) => ({
   contas: [],
   setContas: (contas: Conta[]) => set({ contas }),
-  addConta: (conta: Conta) => set((state) => ({ contas: [...state.contas, conta] })),
+  addConta: (conta: Conta) => set((state: { contas: any; }) => ({ contas: [...state.contas, conta] })),
 }));
 
 export default useContaStore;
