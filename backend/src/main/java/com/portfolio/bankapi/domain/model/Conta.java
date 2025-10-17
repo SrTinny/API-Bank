@@ -1,17 +1,17 @@
 package com.portfolio.bankapi.domain.model;
 
 import jakarta.persistence.*;
-import lombok.Data; // Usando Lombok para getters/setters/etc
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "contas")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Estratégia de herança
-@DiscriminatorColumn(name = "tipo_conta", discriminatorType = DiscriminatorType.STRING) // Coluna para identificar o tipo
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_conta", discriminatorType = DiscriminatorType.STRING)
 @Data // Gera Getters, Setters, toString, equals, hashCode (Lombok)
-@NoArgsConstructor // Construtor sem argumentos (JPA requirement)
-public abstract class Conta { // Classe abstrata base
+@NoArgsConstructor // Construtor sem argumentos (requisito JPA)
+public abstract class Conta { 
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,10 @@ public abstract class Conta { // Classe abstrata base
         this.titular = titular;
     }
 
-    // Método abstrato que será implementado por cada tipo de conta
+    /**
+     * Método polimórfico que define a regra de saque para cada tipo de conta.
+     * @param valorSaque O valor que se deseja sacar.
+     * @return true se o saldo for suficiente (incluindo limite, se houver).
+     */
     public abstract boolean podeSacar(BigDecimal valorSaque);
 }
