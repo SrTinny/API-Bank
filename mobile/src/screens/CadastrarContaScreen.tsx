@@ -5,7 +5,7 @@ import AppInput from '../components/AppInput';
 import { TipoConta } from '../types/bank';
 import { ContaApiService } from '../services/ContaApiService';
 
-const CadastrarContaScreen: React.FC = () => {
+const CadastrarContaScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [titular, setTitular] = useState('');
   const [numero, setNumero] = useState('');
   const [tipo, setTipo] = useState<TipoConta>('COMUM');
@@ -52,6 +52,11 @@ const CadastrarContaScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {onBack && (
+        <View style={{ marginBottom: 8 }}>
+          <Button title="Voltar" onPress={onBack} />
+        </View>
+      )}
       <Text style={styles.title}>Cadastrar Conta</Text>
       <AppInput label="Titular" placeholder="Nome do titular" value={titular} onChangeText={setTitular} />
       <AppInput label="Número" placeholder="0000-0" value={numero} onChangeText={setNumero} />

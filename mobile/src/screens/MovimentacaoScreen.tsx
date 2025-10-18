@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import AppInput from '../components/AppInput';
 import { ContaApiService } from '../services/ContaApiService';
 
-const MovimentacaoScreen: React.FC = () => {
+const MovimentacaoScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [numero, setNumero] = useState('');
   const [valor, setValor] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,11 @@ const MovimentacaoScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {onBack && (
+        <View style={{ marginBottom: 8 }}>
+          <Button title="Voltar" onPress={onBack} />
+        </View>
+      )}
       <Text style={styles.title}>Movimentação</Text>
       <AppInput label="Número da conta" placeholder="0000-0" value={numero} onChangeText={setNumero} />
       <AppInput label="Valor (R$)" placeholder="0.00" value={valor} onChangeText={setValor} keyboardType="numeric" />

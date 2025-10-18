@@ -1,39 +1,52 @@
-import React, { useState } from 'react';
-import { SafeAreaView, View, Text, Button, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CadastrarContaScreen from './src/screens/CadastrarContaScreen';
 import MovimentacaoScreen from './src/screens/MovimentacaoScreen';
 
-const App: React.FC = () => {
-  const [route, setRoute] = useState<'home' | 'cadastrar' | 'movimentacao'>('home');
+type RootStackParamList = {
+  Home: undefined;
+  Cadastrar: undefined;
+  Movimentacao: undefined;
+};
 
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.container}>
-      {route === 'home' && (
-        <View>
-          <Text style={styles.title}>API Bank (Mobile)</Text>
-          <View style={styles.button}>
-            <Button title="Cadastrar Conta" onPress={() => setRoute('cadastrar')} />
-          </View>
-          <View style={styles.button}>
-            <Button title="Movimentação" onPress={() => setRoute('movimentacao')} />
-          </View>
-        </View>
-      )}
+    <View>
+      <Text style={styles.title}>API Bank (Mobile)</Text>
+      <View style={styles.button}>
+        <Button title="Cadastrar Conta" onPress={() => navigation.navigate('Cadastrar')} />
+      </View>
+      <View style={styles.button}>
+        <Button title="Movimentação" onPress={() => navigation.navigate('Movimentacao')} />
+      </View>
+    </View>
+  );
+};
 
-      {route === 'cadastrar' && (
-        <View style={styles.screen}>
-          <Button title="Voltar" onPress={() => setRoute('home')} />
-          <CadastrarContaScreen />
-        </View>
-      )}
-
-      {route === 'movimentacao' && (
-        <View style={styles.screen}>
-          <Button title="Voltar" onPress={() => setRoute('home')} />
-          <MovimentacaoScreen />
-        </View>
-      )}
-    </SafeAreaView>
+const App: React.FC = () => {
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'API Bank' }} />
+          <Stack.Screen
+            name="Cadastrar"
+            component={CadastrarContaScreen as any}
+            options={{ title: 'Cadastrar Conta' }}
+          />
+          <Stack.Screen
+            name="Movimentacao"
+            component={MovimentacaoScreen as any}
+            options={{ title: 'Movimentação' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 
