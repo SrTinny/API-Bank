@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Button, Alert, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AppInput from '../components/AppInput';
 import { TipoConta } from '../types/bank';
-import { ContaApiService } from '../services/ContaApiService';
+import { ContaApiService } from '../api/ContaApiService';
 
 const CadastrarContaScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [titular, setTitular] = useState('');

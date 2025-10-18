@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import AppInput from '../components/AppInput';
-import { ContaApiService } from '../services/ContaApiService';
+import { ContaApiService } from '../api/ContaApiService';
 
 const MovimentacaoScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [numero, setNumero] = useState('');
