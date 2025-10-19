@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AppButton from './src/components/AppButton';
+import Logo from './src/components/icons/Logo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CadastrarContaScreen from './src/screens/CadastrarContaScreen';
 import MovimentacaoScreen from './src/screens/MovimentacaoScreen';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type RootStackParamList = {
   Welcome: undefined;
@@ -19,12 +20,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const WelcomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAFB' }}>
+      <Logo size={96} />
       <Text style={styles.title}>API Bank</Text>
       <View style={{ width: '80%', marginTop: 24 }}>
-        <AppButton title="Cadastrar Conta" onPress={() => navigation.navigate('Cadastrar')} />
+        <AppButton title="Cadastrar Conta" onPress={() => navigation.navigate('Cadastrar')} variant="primary" />
       </View>
       <View style={{ width: '80%', marginTop: 12 }}>
-        <AppButton title="Ir para Operações" onPress={() => navigation.navigate('Movimentacao')} />
+        <AppButton title="Ir para Operações" onPress={() => navigation.navigate('Movimentacao')} variant="outline" />
       </View>
     </SafeAreaView>
   );

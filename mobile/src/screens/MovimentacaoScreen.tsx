@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
+import IconTransfer from '../components/icons/IconTransfer';
 import { ContaApiService } from '../api/ContaApiService';
 
 const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () => void }> = ({ navigation, route, onBack }) => {
@@ -118,7 +119,10 @@ const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () 
           <AppButton title="Voltar" onPress={onBack} variant="outline" />
         </View>
       )}
-      <Text style={styles.title}>Movimentação</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <IconTransfer size={28} />
+        <Text style={[styles.title, { marginLeft: 8 }]}>Movimentação</Text>
+      </View>
       <AppInput label="Número da conta" placeholder="0000-0" value={numero} onChangeText={setNumero} />
   <AppInput label="Conta destino (para transferência)" placeholder="0000-0" value={destino} onChangeText={setDestino} />
       <AppInput label="Valor (R$)" placeholder="0.00" value={valor} onChangeText={setValor} keyboardType="numeric" />

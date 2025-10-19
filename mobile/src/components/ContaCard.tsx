@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import IconTransfer from './icons/IconTransfer';
 import { IConta } from '../types/Conta';
 
 const bgColorForTipo = (tipo: string) => {
@@ -18,7 +19,10 @@ const ContaCard: React.FC<{ conta: IConta }> = ({ conta }) => {
   return (
     <View style={[styles.card, { borderLeftColor: bgColorForTipo(conta.tipo_conta) }]}>
       <View style={styles.row}>
-        <Text style={styles.titular}>{conta.titular}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <IconTransfer size={18} color="#6B7280" />
+          <Text style={[styles.titular, { marginLeft: 8 }]}>{conta.titular}</Text>
+        </View>
         <Text style={styles.tipo}>{conta.tipo_conta}</Text>
       </View>
 

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert, Platform } from 'react-native';
 import AppButton from '../components/AppButton';
 import { Picker } from '@react-native-picker/picker';
 import AppInput from '../components/AppInput';
+import IconUser from '../components/icons/IconUser';
 import { TipoConta } from '../types/bank';
 import { ContaApiService } from '../api/ContaApiService';
 
@@ -62,9 +63,12 @@ const CadastrarContaScreen: React.FC<{ navigation?: any; onBack?: () => void }> 
     <View style={styles.container}>
       {onBack && (
         <View style={{ marginBottom: 8 }}>
-          <AppButton title="Voltar" onPress={onBack} />
+          <AppButton title="Voltar" onPress={onBack} variant="outline" />
         </View>
       )}
+      <View style={{ alignItems: 'center', marginBottom: 8 }}>
+        <IconUser size={48} />
+      </View>
       <Text style={styles.title}>Cadastrar Conta</Text>
       <AppInput label="Titular" placeholder="Nome do titular" value={titular} onChangeText={setTitular} />
       <AppInput label="Número" placeholder="0000-0" value={numero} onChangeText={setNumero} />
@@ -83,7 +87,7 @@ const CadastrarContaScreen: React.FC<{ navigation?: any; onBack?: () => void }> 
       )}
 
       <View style={styles.button}>
-        <AppButton title={loading ? 'Enviando...' : 'Cadastrar'} onPress={onSubmit} loading={loading} />
+        <AppButton title={loading ? 'Enviando...' : 'Cadastrar'} onPress={onSubmit} loading={loading} variant="primary" />
       </View>
     </View>
   );

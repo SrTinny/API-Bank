@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AppButton from '../components/AppButton';
 import ContaCard from '../components/ContaCard';
 import { useContaStore } from '../context/useContaStore';
@@ -25,7 +26,7 @@ const ContasListScreen: React.FC = () => {
         <Text style={styles.title}>Contas</Text>
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <View style={{ width: '100%', marginVertical: 12 }}>
-          <AppButton title="Atualizar" onPress={() => call().then((d) => d && setContas(d as any))} />
+          <AppButton title="Atualizar" onPress={() => call().then((d) => d && setContas(d as any))} variant="primary" />
         </View>
       </View>
       <FlatList
