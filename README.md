@@ -7,127 +7,113 @@ Fluxo de uso
 - Ao iniciar o programa, uma tela de boas-vindas aparece e, em seguida, telas para cadastro de contas (comum, poupança e especial).
 - Após o cadastro, a tela de Operações apresenta os botões:
   1) Saque
-  2) Depósito
-  3) Transferência
-  4) Reajustar
-  5) Ver saldos
-  6) Finalizar
+  # API-Bank (Backend + Mobile)
 
-- Comportamento resumido:
-  - Saque: solicita número da conta e valor; verifica saldo e, se necessário, utiliza limite (cheque especial) aplicando multa quando usado.
-  - Depósito: solicita número da conta e valor; confirma titular e atualiza saldo.
-  - Transferência: solicita contas origem/destino e valor; realiza transferência quando aplicável.
-  - Reajustar: aplica taxa (padrão 10% se não informada) à conta poupança.
-  - Ver saldos: mostra saldos atualizados.
-  # API-Bank (backend + mobile)
+  Aplicação Java (Spring Boot) que implementa operações bancárias básicas (Conta Comum, Conta Poupança e Conta Especial). Inclui um cliente mobile Expo (React Native + TypeScript) para testes locais.
 
-  Aplicação Java (Spring Boot) que implementa operações bancárias básicas: Conta Comum, Conta Poupança e Conta Especial. O repositório também contém um cliente mobile Expo (React Native + TypeScript) para testes locais.
+  ## Estrutura do repositório
+  - `backend/` — Spring Boot (Java 21, Maven wrapper)
+  - `mobile/` — Expo-managed React Native (TypeScript)
 
-  Sumário rápido
-  --------------
-  - Backend: `backend/` (Spring Boot, Java 21, Maven wrapper)
-  - Mobile: `mobile/` (Expo-managed React Native, TypeScript)
+  ---
 
-  Pré-requisitos
-  --------------
-  - Java 21 JDK (recomendado: Eclipse Temurin / Adoptium)
-  - Node.js + npm (para a parte mobile)
-  - Rede: para testar no dispositivo físico, coloque o celular e a máquina na mesma rede Wi-Fi.
+  ## Requisitos
+  - Java 21 JDK (Eclipse Temurin / Adoptium recomendado)
+  - Node.js + npm
+  - PowerShell (Windows) para os comandos abaixo
+  - Dispositivo e máquina no mesmo Wi-Fi para testes em dispositivo físico
 
-  Instalação rápida (backend)
-  --------------------------
-  1. Abra PowerShell no diretório `backend`.
-  2. (Opcional) Se quiser usar o script para instalar o JDK 21 localmente:
+  ---
+
+  ## Como executar (sempre)
+  Abaixo os passos curtos e reproduzíveis para rodar backend e mobile no Windows (PowerShell). Use esses comandos sempre para evitar problemas de porta/cache.
+
+  ### 1) Backend (API)
+  Abra PowerShell e execute:
 
   ```powershell
-  cd backend\scripts
-  .\install-jdk21.ps1
-  ```
-
-  3. Construir e executar (modo desenvolvimento):
-
-  ```powershell
-  cd backend
+  cd C:\Users\joaov\Documents\Projetos\Tecnicas-de-prog-trab-1\backend
+  # Build (gera o jar)
   .\mvnw.cmd -DskipTests package
-  java -jar target\demo-0.0.1-SNAPSHOT.jar
-  # ou durante desenvolvimento apenas
+  # Ou, para desenvolvimento (iniciar e acompanhar logs):
   .\mvnw.cmd spring-boot:run
+  # Alternativa: executar o JAR gerado
+  java -jar target\demo-0.0.1-SNAPSHOT.jar
   ```
 
-  Instalação rápida (mobile)
-  -------------------------
-  1. No diretório `mobile`:
+  Notas:
+  - O backend está configurado para escutar em `0.0.0.0` (aceita conexões da LAN).
+  - H2 foi configurado em modo arquivo em `backend/data/bankdb.mv.db` para persistência em desenvolvimento.
+  - H2 Console disponível: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:file:./data/bankdb`).
 
-  ```bash
-  cd mobile
-  npm install        # se ainda não instalou dependências
-  npx expo start
-  ```
-
-  2. Abra o app Expo Go no celular e escanei o QR apresentado pelo Metro Bundler (use `tunnel` se necessário).
-
-  Configuração do cliente mobile
-  ------------------------------
-  O cliente axios está configurado para apontar para o IP local da máquina durante desenvolvimento. No arquivo `mobile/src/services/apiClient.ts` verifique o valor de `baseURL`.
-
-  Exemplo (deve corresponder ao IP da sua máquina na rede local):
-
-  ```ts
-  export const api = axios.create({
-    baseURL: 'http://192.168.18.44:8081',
-    headers: { 'Content-Type': 'application/json' }
-  })
-  ```
-
-  Se o seu Expo estiver usando `tunnel` ou `localhost`, prefira apontar para o IP LAN da máquina para que o dispositivo consiga alcançar o backend.
-
-  Resolução de problemas comuns
-  ----------------------------
-  - AxiosError: Network Error
-    - Causa típica: o dispositivo não consegue alcançar o backend (binding, porta ou firewall).
-    - Verifique:
-      - O backend está rodando (procure no `backend` por "Tomcat started on port 8081").
-      - O `apiClient.baseURL` aponta para o IP correto e porta (ex.: `http://192.168.18.44:8081`).
-      - Windows Firewall permite conexões na porta (ex.: 8081) para o processo Java. Se necessário, adicione uma regra temporária.
-
-  - Erro 500 ao criar conta (duplicata)
-    - Se o pedido retorna erro 500 e o log mostra `Conta com este número já existe.`, isso significa que tentou cadastrar um número duplicado. Agora duplicatas retornam HTTP 409 Conflict (mapeado por `ApiExceptionHandler`).
-
-  Notas importantes sobre `application.properties`
-  -----------------------------------------------
-  Durante o desenvolvimento eu habilitei temporariamente as seguintes propriedades em `backend/src/main/resources/application.properties`:
-
-  ```properties
-  spring.jpa.hibernate.ddl-auto=update
-  server.address=0.0.0.0
-  ```
-
-  - `ddl-auto=update` ajuda a criar/atualizar o schema automaticamente em H2 para desenvolvimento. NÃO deixe isso em produção; o ideal é usar migrações controladas (Flyway/Liquibase).
-  - `server.address=0.0.0.0` faz o Spring aceitar conexões de outras máquinas na rede local (necessário para testes com dispositivo físico). Remova em produção se desejar limitar o binding.
-
-  Scripts úteis
-  -------------
-  - `backend/scripts/clean.ps1` — script PowerShell para limpar `target/`, `backend_log.txt` e `backend_err.txt`. Uso:
+  ### 2) Mobile (Expo)
+  Abra um novo PowerShell, no diretório `mobile`:
 
   ```powershell
-  cd backend
-  .\scripts\clean.ps1
-  # ou para remover também node_modules do mobile (CUIDADO):
-  .\scripts\clean.ps1 -RemoveNodeModules
+  cd C:\Users\joaov\Documents\Projetos\Tecnicas-de-prog-trab-1\mobile
+  # Instalar dependências (se ainda não instalou)
+  npm install
+  # Iniciar bundler (force clear cache quando alterar baseURL)
+  npx expo start -c
   ```
 
+  - Abra o Expo Go no seu celular e escaneie o QR.
+  - Caso o Expo proponha mudar de porta, aceite ou force a porta 8081 com `npx expo start --port 8081 -c`.
+  - O `apiClient` do mobile já foi configurado para usar o IP da máquina: `http://192.168.18.44:8080`. Atualize `mobile/src/services/apiClient.ts` se seu IP mudar.
+
+  ---
+
+  ## H2 Console (inspecionar o DB)
+  1. Abra: `http://localhost:8080/h2-console`
+  2. JDBC URL: `jdbc:h2:file:./data/bankdb` (ou caminho absoluto `jdbc:h2:file:C:/.../backend/data/bankdb`)
+  3. User: `sa` | Password: (vazio)
+  4. Ex.: `SELECT * FROM CONTAS;`
+
+  Se o console reclamar que o DB não existe, verifique o path e se o backend está executando com o mesmo arquivo.
+
+  ---
+
+  ## Solução rápida para `AxiosError: Network Error` no Expo Go
+  1. Confirme que o backend responde do celular (abra no navegador do celular):
+     `http://192.168.18.44:8080/api/contas`
+  2. Se abrir JSON, recarregue o Expo (`npx expo start -c` e "Reload" no app).
+  3. Se não abrir do celular:
+     - Verifique firewall (abrir porta 8080 para rede privada) ou pare VPN/isolamento de rede.
+     - Verifique se o `apiClient` usa o IP correto.
+
+  ---
+
+  ## Comandos de diagnóstico úteis
+  - Ver processos escutando portas (Windows):
+  ```powershell
+  netstat -aon | findstr ":8080"
+  netstat -aon | findstr ":8081"
+  ```
+  - Encontrar e parar processo (ex.: PID 13500):
+  ```powershell
+  tasklist /FI "PID eq 13500" /FO LIST
+  Stop-Process -Id 13500 -Force
+  ```
+  - Checar IP da máquina (LAN):
+  ```powershell
+  Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' } | Select-Object IPAddress, InterfaceAlias
+  ```
+
+  ---
+
+  ## Notas de desenvolvimento e produção
+  - `spring.jpa.hibernate.ddl-auto=update` está habilitado apenas para desenvolvimento (facilita criação de schema). Em produção, use `none` e migrações (Flyway/Liquibase).
+  - `server.address=0.0.0.0` permite testes via dispositivo físico; revise em ambientes mais restritos.
+
+  ---
+
+  ## O que mais posso fazer
+  - Atualizar `apiClient` para descobrir o IP automaticamente via `expo-constants` (requer instalar `expo-constants`).
+  - Adicionar um endpoint `/api/contas/exportar` para baixar CSV de todas as contas.
+  - Criar scripts PowerShell adicionais para iniciar/stopar backend e abrir o H2 Console automaticamente.
+
+  ---
+
+  Se quiser que eu commite o README atualizado (ou ajustar o IP para outro), diga o IP ou confirme o commit.
   Logs e diagnóstico
-  ------------------
-  - Logs do backend (quando executado via mvnw com redirecionamento) podem estar em `backend_log.txt` e `backend_err.txt`. Eles costumam conter mensagens úteis (ex.: payloads recebidos e stacktraces).
-
-  Segurança / Produção
-  --------------------
-  - Antes de colocar em produção:
-    - Reverter `spring.jpa.hibernate.ddl-auto` para `none` e aplicar migrações controladas.
-    - Remover `server.address=0.0.0.0` se não desejar expor o serviço em todas as interfaces.
-    - Configurar CORS e autenticação.
-
-  Contato / Ajuda
-  --------------
-  Se quiser que eu configure um processo de inicialização mais seguro (migrations + script de seed) ou preparar um README mais detalhado para o mobile, diga qual área prefere que eu foque.
 
