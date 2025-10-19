@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import AppInput from '../components/AppInput';
 import { ContaApiService } from '../api/ContaApiService';
 
-const MovimentacaoScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
+const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () => void }> = ({ navigation, route, onBack }) => {
   const [numero, setNumero] = useState('');
   const [valor, setValor] = useState('');
   const [destino, setDestino] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const initial = route?.params?.initialNumero;
+    if (initial) setNumero(String(initial));
+  }, [route]);
 
   const handleOperacao = async (tipo: 'saque' | 'deposito') => {
     if (!numero.trim() || !valor.trim()) {
@@ -100,6 +105,41 @@ const MovimentacaoScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         </View>
         <View style={styles.button}>
           <Button title={loading ? 'Processando...' : 'Transferir'} onPress={handleTransferencia} disabled={loading} />
+        </View>
+      </View>
+
+      <View style={{ height: 16 }} />
+
+      <View style={styles.buttons}>
+        <View style={styles.button}>
+          <Button title="Reajustar (Poupança)" onPress={async () => {
+            try {
+              setLoading(true);
+              await ContaApiService.reajustar(numero.trim(), 0.1);
+              Alert.alert('Reajuste', 'Reajuste aplicado (10%)');
+            } catch (err: any) {
+              const message = err?.response?.data?.message || err?.message || 'Erro ao reajustar';
+              Alert.alert('Erro', message);
+            } finally { setLoading(false); }
+          }} disabled={!numero.trim() || loading} />
+        </View>
+        <View style={styles.button}>
+          <Button title="Ver saldos" onPress={async () => {
+            try {
+              setLoading(true);
+              const conta = await ContaApiService.getConta(numero.trim());
+              Alert.alert('Saldo', `Conta ${conta.numero}: R$ ${Number(conta.saldo).toFixed(2)}`);
+            } catch (err: any) {
+              const message = err?.response?.data?.message || err?.message || 'Erro ao buscar saldo';
+              Alert.alert('Erro', message);
+            } finally { setLoading(false); }
+          }} disabled={!numero.trim() || loading} />
+        </View>
+        <View style={styles.button}>
+          <Button title="Finalizar" onPress={() => {
+            // volta para a tela de boas-vindas
+            if (navigation) navigation.navigate('Welcome');
+          }} />
         </View>
       </View>
     </View>

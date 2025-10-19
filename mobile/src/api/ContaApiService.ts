@@ -24,6 +24,11 @@ export class ContaApiService {
     await apiClient.patch(`/api/contas/transferencia`, dto);
   }
 
+  static async getConta(numero: string): Promise<IConta> {
+    const res = await apiClient.get<IConta>(`/api/contas/${encodeURIComponent(numero)}`);
+    return res.data;
+  }
+
   static async reajustar(numero: string, taxa?: number): Promise<void> {
     // backend espera um DTO com o campo taxaReajuste (OperacaoDTO)
     await apiClient.patch(`/api/contas/${encodeURIComponent(numero)}/reajuste`, { taxaReajuste: taxa });

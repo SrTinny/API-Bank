@@ -5,26 +5,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CadastrarContaScreen from './src/screens/CadastrarContaScreen';
 import MovimentacaoScreen from './src/screens/MovimentacaoScreen';
+import { SafeAreaView } from 'react-native';
 
 type RootStackParamList = {
-  Home: undefined;
+  Welcome: undefined;
   Cadastrar: undefined;
-  Movimentacao: undefined;
+  Movimentacao: { initialNumero?: string } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+const WelcomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
-    <View>
-      <Text style={styles.title}>API Bank (Mobile)</Text>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={styles.title}>Bem-vindo ao API Bank</Text>
       <View style={styles.button}>
         <Button title="Cadastrar Conta" onPress={() => navigation.navigate('Cadastrar')} />
       </View>
       <View style={styles.button}>
-        <Button title="Movimentação" onPress={() => navigation.navigate('Movimentacao')} />
+        <Button title="Ir para Operações" onPress={() => navigation.navigate('Movimentacao')} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -32,8 +33,8 @@ const App: React.FC = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'API Bank' }} />
+        <Stack.Navigator initialRouteName="Welcome">
+          <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'API Bank' }} />
           <Stack.Screen
             name="Cadastrar"
             component={CadastrarContaScreen as any}
@@ -42,7 +43,7 @@ const App: React.FC = () => {
           <Stack.Screen
             name="Movimentacao"
             component={MovimentacaoScreen as any}
-            options={{ title: 'Movimentação' }}
+            options={{ title: 'Operações' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

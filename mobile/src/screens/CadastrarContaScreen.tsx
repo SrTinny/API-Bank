@@ -5,7 +5,7 @@ import AppInput from '../components/AppInput';
 import { TipoConta } from '../types/bank';
 import { ContaApiService } from '../api/ContaApiService';
 
-const CadastrarContaScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
+const CadastrarContaScreen: React.FC<{ navigation?: any; onBack?: () => void }> = ({ navigation, onBack }) => {
   const [titular, setTitular] = useState('');
   const [numero, setNumero] = useState('');
   const [tipo, setTipo] = useState<TipoConta>('COMUM');
@@ -38,6 +38,10 @@ const CadastrarContaScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => 
       setLoading(true);
       const created = await ContaApiService.cadastrarConta(payload);
       Alert.alert('Conta criada', `Conta ${created.numero} criada com sucesso`);
+      // Navega automaticamente para tela de Movimentação passando o número criado
+      if (navigation && created && created.numero) {
+        navigation.navigate('Movimentacao', { initialNumero: created.numero });
+      }
       // limpar formulário
       setTitular('');
       setNumero('');
