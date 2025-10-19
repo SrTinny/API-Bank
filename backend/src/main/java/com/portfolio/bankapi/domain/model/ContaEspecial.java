@@ -4,12 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import java.math.BigDecimal;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @DiscriminatorValue("ESPECIAL")
-@Getter @Setter // Adicionado para acessar o campo limiteChequeEspecial
 public class ContaEspecial extends Conta {
 
     // Campo exclusivo desta classe
@@ -27,6 +24,14 @@ public class ContaEspecial extends Conta {
     public ContaEspecial(String numero, String titular, BigDecimal limite) {
         super(numero, titular);
         this.limiteChequeEspecial = limite;
+    }
+
+    public BigDecimal getLimiteChequeEspecial() {
+        return limiteChequeEspecial;
+    }
+
+    public void setLimiteChequeEspecial(BigDecimal limiteChequeEspecial) {
+        this.limiteChequeEspecial = limiteChequeEspecial;
     }
 
     @Override

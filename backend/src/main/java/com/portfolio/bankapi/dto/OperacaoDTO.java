@@ -1,11 +1,9 @@
 package com.portfolio.bankapi.dto;
 
 import java.math.BigDecimal;
-import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-@Data
 public class OperacaoDTO {
 
     // Adicionando validações (Boas Práticas de API)
@@ -14,5 +12,14 @@ public class OperacaoDTO {
     private BigDecimal valor;
 
     // Usado para Reajuste da Poupança
-    private BigDecimal taxaReajuste; 
+    private BigDecimal taxaReajuste;
+
+    public OperacaoDTO() {}
+
+    public BigDecimal getValor() { return valor; }
+    public void setValor(BigDecimal valor) { this.valor = valor; }
+
+    public BigDecimal getTaxaReajuste() { return taxaReajuste; }
+    public void setTaxaReajuste(BigDecimal taxaReajuste) { this.taxaReajuste = taxaReajuste; }
+
 }

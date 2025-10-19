@@ -1,17 +1,13 @@
 package com.portfolio.bankapi.domain.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "contas")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_conta", discriminatorType = DiscriminatorType.STRING)
-@Data // Gera Getters, Setters, toString, equals, hashCode (Lombok)
-@NoArgsConstructor // Construtor sem argumentos (requisito JPA)
-public abstract class Conta { 
+public abstract class Conta {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +25,43 @@ public abstract class Conta {
     public Conta(String numero, String titular) {
         this.numero = numero;
         this.titular = titular;
+    }
+
+    // Construtor padrão exigido pelo JPA
+    public Conta() {
+    }
+
+    // Getters e Setters gerados manualmente (substitui Lombok)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getTitular() {
+        return titular;
+    }
+
+    public void setTitular(String titular) {
+        this.titular = titular;
+    }
+
+    public BigDecimal getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(BigDecimal saldo) {
+        this.saldo = saldo;
     }
 
     /**
