@@ -71,6 +71,51 @@ Fluxo de uso
 
   Se o console reclamar que o DB não existe, verifique o path e se o backend está executando com o mesmo arquivo.
 
+   ---
+
+   ## Testando Transferência (PowerShell)
+
+   A seguir alguns comandos PowerShell para testar a funcionalidade de transferência diretamente na API.
+
+   1) Criar duas contas de teste (origem e destino):
+
+   ```powershell
+   # Conta origem (COMUM)
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas -Method Post -ContentType 'application/json' -Body '{"tipo":"COMUM","numero":"1000","titular":"Conta Origem"}'
+
+   # Conta destino (COMUM)
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas -Method Post -ContentType 'application/json' -Body '{"tipo":"COMUM","numero":"2000","titular":"Conta Destino"}'
+   ```
+
+   2) Fazer um depósito inicial na conta origem para ter saldo disponível:
+
+   ```powershell
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas/1000/deposito -Method Patch -ContentType 'application/json' -Body '{"valor":150.00}'
+   ```
+
+   3) Executar transferência (happy path):
+
+   ```powershell
+   $body = @{ contaOrigem = '1000'; contaDestino = '2000'; valor = 50 } | ConvertTo-Json
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas/transferencia -Method Patch -ContentType 'application/json' -Body $body
+   ```
+
+   4) Conferir saldos após transferência:
+
+   ```powershell
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas/1000 -Method Get
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas/2000 -Method Get
+   ```
+
+   5) Teste de saldo insuficiente (espera HTTP 400 / mensagem de erro): tente transferir um valor maior que o saldo disponível na origem.
+
+   ```powershell
+   $body = @{ contaOrigem = '1000'; contaDestino = '2000'; valor = 10000 } | ConvertTo-Json
+   Invoke-RestMethod -Uri http://localhost:8080/api/contas/transferencia -Method Patch -ContentType 'application/json' -Body $body -ErrorAction Stop
+   ```
+
+   - O serviço retornará um erro com status 400 e uma mensagem com `Saldo insuficiente` (tratado por `ApiExceptionHandler`).
+
   ---
 
   ## Solução rápida para `AxiosError: Network Error` no Expo Go

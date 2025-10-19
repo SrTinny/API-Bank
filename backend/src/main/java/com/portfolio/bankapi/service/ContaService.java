@@ -89,12 +89,26 @@ public class ContaService {
 
     @Transactional
     public void transferir(String numeroOrigem, String numeroDestino, BigDecimal valor) {
-        // A ordem é importante para transações: 1. Sacar, 2. Depositar.
-        // O método 'sacar' já faz o 'save' e trata a exceção de saldo insuficiente.
+        if (numeroOrigem == null || numeroDestino == null) {
+            throw new IllegalArgumentException("Contas de origem e destino devem ser informadas.");
+        }
+
+        if (numeroOrigem.equals(numeroDestino)) {
+            throw new IllegalArgumentException("A conta de origem e destino não podem ser a mesma.");
+        }
+
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor da transferência deve ser maior que zero.");
+        }
+
+        // Verifica se a conta destino existe antes de realizar o saque, assim qualquer exceção abortará a transação.
+        Conta destino = contaRepository.findByNumero(numeroDestino)
+                .orElseThrow(() -> new ContaNaoEncontradaException(numeroDestino));
+
+        // Tenta sacar na origem (irá lançar SaldoInsuficienteException se não houver fundos)
         Conta origem = sacar(numeroOrigem, valor);
-        
-        // Se o saque for bem sucedido, o depósito é feito.
-        // Se a conta destino não for encontrada, o depósito falha e o saque é revertido (por conta do @Transactional)
+
+        // Se sacar ocorreu sem exceção, realiza o depósito na conta destino
         depositar(numeroDestino, valor);
     }
 
