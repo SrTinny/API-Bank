@@ -9,36 +9,35 @@
 # Eclipse
 .classpath
 .project
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+.settings/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
+
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+
+### Wrapper ###
+.mvn/wrapper/maven-wrapper.jar
+
+### H2 / Dev DB ###
+# H2 file used for development persistence
+data/*.mv.db
+data/*.trace.db
+
+### Logs ###
+*.log
+backend_log.txt
+backend_err.txt
 
 ### VS Code ###
 .vscode/

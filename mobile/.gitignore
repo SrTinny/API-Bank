@@ -1,3 +1,4 @@
+
 # Node
 node_modules/
 
@@ -8,12 +9,20 @@ android/
 ios/
 dist/
 build/
+web-build/
 
 # Local env
 .env
+.env.*
 
 # IDE
 .vscode/
 
 # Yarn
 yarn-error.log
+
+# Metro / Expo cache
+.expo/cache/
+
+# Generated files
+*.keystore

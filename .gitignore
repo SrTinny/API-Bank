@@ -1,5 +1,12 @@
+# OS
 .DS_Store
+Thumbs.db
+
+# Environment
 .env
+.env.*
+
+# IDEs
 .idea/
 .vscode/
 *.iml
@@ -7,18 +14,35 @@
 # Node
 node_modules/
 
-# Mobile
+# Mobile (Expo / React Native)
 mobile/node_modules/
 mobile/.expo/
 mobile/.expo-shared/
 mobile/dist/
 mobile/build/
 mobile/.vscode/
+mobile/android/
+mobile/ios/
+
+# Logs
+*.log
+backend_log.txt
+backend_err.txt
 
 # Java / Maven
 **/target/
 **/build/
-*.log
+.mvn/wrapper/maven-wrapper.jar
 
-# Mac
-.DS_Store
+# H2 database (dev file)
+backend/data/*.mv.db
+backend/data/*.trace.db
+
+# Coverage
+.nyc_output/
+coverage/
+
+# Misc
+*.class
+*.jar
+*.war
