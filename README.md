@@ -98,22 +98,3 @@ Fluxo de uso
   ```powershell
   Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' } | Select-Object IPAddress, InterfaceAlias
   ```
-
-  ---
-
-  ## Notas de desenvolvimento e produção
-  - `spring.jpa.hibernate.ddl-auto=update` está habilitado apenas para desenvolvimento (facilita criação de schema). Em produção, use `none` e migrações (Flyway/Liquibase).
-  - `server.address=0.0.0.0` permite testes via dispositivo físico; revise em ambientes mais restritos.
-
-  ---
-
-  ## O que mais posso fazer
-  - Atualizar `apiClient` para descobrir o IP automaticamente via `expo-constants` (requer instalar `expo-constants`).
-  - Adicionar um endpoint `/api/contas/exportar` para baixar CSV de todas as contas.
-  - Criar scripts PowerShell adicionais para iniciar/stopar backend e abrir o H2 Console automaticamente.
-
-  ---
-
-  Se quiser que eu commite o README atualizado (ou ajustar o IP para outro), diga o IP ou confirme o commit.
-  Logs e diagnóstico
-
