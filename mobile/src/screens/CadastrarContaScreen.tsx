@@ -21,7 +21,8 @@ const CadastrarContaScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => 
     const payload: any = {
       titular: titular.trim(),
       numero: numero.trim(),
-      tipo_conta: tipo,
+      // backend espera o campo 'tipo' conforme ContaCadastroDTO
+      tipo: tipo,
     };
 
     if (tipo === 'ESPECIAL') {
@@ -44,7 +45,9 @@ const CadastrarContaScreen: React.FC<{ onBack?: () => void }> = ({ onBack }) => 
       setLimiteChequeEspecial('0');
     } catch (err: any) {
       console.error(err);
-      Alert.alert('Erro', err?.message || 'Erro ao criar conta');
+      // tenta extrair mensagem do backend (Axios) se disponível
+      const backendMessage = err?.response?.data?.message || err?.message;
+      Alert.alert('Erro', backendMessage || 'Erro ao criar conta');
     } finally {
       setLoading(false);
     }

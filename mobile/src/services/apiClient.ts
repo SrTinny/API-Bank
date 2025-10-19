@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://10.0.2.2:8080', // emulador Android -> localhost do host
+  baseURL: 'http://192.168.18.44:8081', // máquina local na rede (use este IP para dispositivo físico via QR). Porta 8081 para evitar conflito com 8080
   headers: {
     'Content-Type': 'application/json',
   },

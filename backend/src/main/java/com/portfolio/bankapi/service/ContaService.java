@@ -34,9 +34,9 @@ public class ContaService {
 
     @Transactional
     public Conta salvar(Conta conta) {
-        // Validação de número de conta duplicado, se necessário
+        // Validação de número de conta duplicado
         if (conta.getId() == null && contaRepository.findByNumero(conta.getNumero()).isPresent()) {
-             throw new RuntimeException("Conta com este número já existe.");
+            throw new com.portfolio.bankapi.exception.ContaJaExisteException(conta.getNumero());
         }
         return contaRepository.save(conta);
     }

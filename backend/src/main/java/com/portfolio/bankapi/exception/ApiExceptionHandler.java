@@ -29,6 +29,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
+
+    // Trata ContaJaExisteException -> Retorna 409 CONFLICT
+    @ExceptionHandler(ContaJaExisteException.class)
+    public ResponseEntity<Object> handleContaJaExiste(ContaJaExisteException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
     
     // Método auxiliar para criar o corpo da resposta de erro
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message) {

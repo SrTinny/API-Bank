@@ -19,66 +19,115 @@ Fluxo de uso
   - Transferência: solicita contas origem/destino e valor; realiza transferência quando aplicável.
   - Reajustar: aplica taxa (padrão 10% se não informada) à conta poupança.
   - Ver saldos: mostra saldos atualizados.
-  - Finalizar: encerra o programa.
+  # API-Bank (backend + mobile)
 
-Requisitos de desenvolvimento (upgrade Java)
------------------------------------------
-- Este projeto foi atualizado para usar Java 21 (LTS).
-- Requisitos locais:
-  - Java 21 JDK (Eclipse Temurin / Adoptium recomendado) — necessário para compilar e executar.
-  - Maven (o projeto usa o Maven Wrapper `mvnw`, portanto maven não precisa estar instalado globalmente).
+  Aplicação Java (Spring Boot) que implementa operações bancárias básicas: Conta Comum, Conta Poupança e Conta Especial. O repositório também contém um cliente mobile Expo (React Native + TypeScript) para testes locais.
 
-Instalação rápida do JDK 21 (sem privilégios de administrador)
--------------------------------------------------------------
-Há um script auxiliar em `backend/scripts/install-jdk21.ps1` que baixa e extrai o Temurin JDK 21 para a pasta do usuário (`%USERPROFILE%\.jdk\jdk-21`). Exemplo de uso no PowerShell (executar na pasta `backend/scripts`):
+  Sumário rápido
+  --------------
+  - Backend: `backend/` (Spring Boot, Java 21, Maven wrapper)
+  - Mobile: `mobile/` (Expo-managed React Native, TypeScript)
 
-```powershell
-.\install-jdk21.ps1
-```
+  Pré-requisitos
+  --------------
+  - Java 21 JDK (recomendado: Eclipse Temurin / Adoptium)
+  - Node.js + npm (para a parte mobile)
+  - Rede: para testar no dispositivo físico, coloque o celular e a máquina na mesma rede Wi-Fi.
 
-Configurar Maven Toolchains (opcional)
-------------------------------------
-Para garantir que o Maven use JDK 21, crie (ou atualize) o arquivo `%USERPROFILE%\.m2\toolchains.xml` com o caminho para o JDK instalado. Exemplo:
+  Instalação rápida (backend)
+  --------------------------
+  1. Abra PowerShell no diretório `backend`.
+  2. (Opcional) Se quiser usar o script para instalar o JDK 21 localmente:
 
-```xml
-<toolchains>
-  <toolchain>
-    <type>jdk</type>
-    <provides>
-      <version>21</version>
-      <vendor>eclipse-adoptium</vendor>
-    </provides>
-    <configuration>
-      <jdkHome>C:\\Users\\<seu_usuario>\\.jdk\\jdk-21</jdkHome>
-    </configuration>
-  </toolchain>
-</toolchains>
-```
+  ```powershell
+  cd backend\scripts
+  .\install-jdk21.ps1
+  ```
 
-Alternativa: exporte temporariamente `JAVA_HOME` apontando para o JDK21 antes de executar o Maven (ex.: em PowerShell):
+  3. Construir e executar (modo desenvolvimento):
 
-```powershell
-$inner = Get-ChildItem "$env:USERPROFILE\.jdk\jdk-21" -Directory | Select-Object -First 1
-$env:JAVA_HOME = $inner.FullName
-$env:PATH = "$env:JAVA_HOME\bin;" + $env:PATH
-```
+  ```powershell
+  cd backend
+  .\mvnw.cmd -DskipTests package
+  java -jar target\demo-0.0.1-SNAPSHOT.jar
+  # ou durante desenvolvimento apenas
+  .\mvnw.cmd spring-boot:run
+  ```
 
-Como construir e executar o projeto
-----------------------------------
-No diretório `backend`:
+  Instalação rápida (mobile)
+  -------------------------
+  1. No diretório `mobile`:
 
-```powershell
-cd backend
-.\mvnw.cmd -DskipTests package   # gera o jar
-java -jar target\demo-0.0.1-SNAPSHOT.jar
-```
+  ```bash
+  cd mobile
+  npm install        # se ainda não instalou dependências
+  npx expo start
+  ```
 
-Observações
------------
-- Fiz alterações de compatibilidade para Java 21 no POM (`maven-compiler-plugin` com `<release>21` e `maven-toolchains-plugin`) e corrigi a classe principal `BankApiApplication` para que o Spring Boot consiga empacotar o jar executável.
-- Se for necessário, posso commitar essas mudanças e criar um pull request.
+  2. Abra o app Expo Go no celular e escanei o QR apresentado pelo Metro Bundler (use `tunnel` se necessário).
 
-Contato
--------
-Aluno: João Victor Cardoso Duarte
+  Configuração do cliente mobile
+  ------------------------------
+  O cliente axios está configurado para apontar para o IP local da máquina durante desenvolvimento. No arquivo `mobile/src/services/apiClient.ts` verifique o valor de `baseURL`.
+
+  Exemplo (deve corresponder ao IP da sua máquina na rede local):
+
+  ```ts
+  export const api = axios.create({
+    baseURL: 'http://192.168.18.44:8081',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  ```
+
+  Se o seu Expo estiver usando `tunnel` ou `localhost`, prefira apontar para o IP LAN da máquina para que o dispositivo consiga alcançar o backend.
+
+  Resolução de problemas comuns
+  ----------------------------
+  - AxiosError: Network Error
+    - Causa típica: o dispositivo não consegue alcançar o backend (binding, porta ou firewall).
+    - Verifique:
+      - O backend está rodando (procure no `backend` por "Tomcat started on port 8081").
+      - O `apiClient.baseURL` aponta para o IP correto e porta (ex.: `http://192.168.18.44:8081`).
+      - Windows Firewall permite conexões na porta (ex.: 8081) para o processo Java. Se necessário, adicione uma regra temporária.
+
+  - Erro 500 ao criar conta (duplicata)
+    - Se o pedido retorna erro 500 e o log mostra `Conta com este número já existe.`, isso significa que tentou cadastrar um número duplicado. Agora duplicatas retornam HTTP 409 Conflict (mapeado por `ApiExceptionHandler`).
+
+  Notas importantes sobre `application.properties`
+  -----------------------------------------------
+  Durante o desenvolvimento eu habilitei temporariamente as seguintes propriedades em `backend/src/main/resources/application.properties`:
+
+  ```properties
+  spring.jpa.hibernate.ddl-auto=update
+  server.address=0.0.0.0
+  ```
+
+  - `ddl-auto=update` ajuda a criar/atualizar o schema automaticamente em H2 para desenvolvimento. NÃO deixe isso em produção; o ideal é usar migrações controladas (Flyway/Liquibase).
+  - `server.address=0.0.0.0` faz o Spring aceitar conexões de outras máquinas na rede local (necessário para testes com dispositivo físico). Remova em produção se desejar limitar o binding.
+
+  Scripts úteis
+  -------------
+  - `backend/scripts/clean.ps1` — script PowerShell para limpar `target/`, `backend_log.txt` e `backend_err.txt`. Uso:
+
+  ```powershell
+  cd backend
+  .\scripts\clean.ps1
+  # ou para remover também node_modules do mobile (CUIDADO):
+  .\scripts\clean.ps1 -RemoveNodeModules
+  ```
+
+  Logs e diagnóstico
+  ------------------
+  - Logs do backend (quando executado via mvnw com redirecionamento) podem estar em `backend_log.txt` e `backend_err.txt`. Eles costumam conter mensagens úteis (ex.: payloads recebidos e stacktraces).
+
+  Segurança / Produção
+  --------------------
+  - Antes de colocar em produção:
+    - Reverter `spring.jpa.hibernate.ddl-auto` para `none` e aplicar migrações controladas.
+    - Remover `server.address=0.0.0.0` se não desejar expor o serviço em todas as interfaces.
+    - Configurar CORS e autenticação.
+
+  Contato / Ajuda
+  --------------
+  Se quiser que eu configure um processo de inicialização mais seguro (migrations + script de seed) ou preparar um README mais detalhado para o mobile, diga qual área prefere que eu foque.
 

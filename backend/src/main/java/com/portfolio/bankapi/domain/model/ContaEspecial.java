@@ -13,8 +13,12 @@ import lombok.Setter;
 public class ContaEspecial extends Conta {
 
     // Campo exclusivo desta classe
-    @Column(nullable = false)
-    private BigDecimal limiteChequeEspecial; 
+    // Em uma estratégia SINGLE_TABLE a coluna existe para todas as subclasses.
+    // Tornamos nullable = true aqui para permitir que registros de outras
+    // subclasses (ex.: COMUM, POUPANCA) não tenham valor — a validação de
+    // requisito de limite para ContaEspecial é feita na camada de serviço.
+    @Column(nullable = true)
+    private BigDecimal limiteChequeEspecial;
 
     public ContaEspecial() {
         super();

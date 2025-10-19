@@ -28,9 +28,15 @@ public class ContaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Conta cadastrarConta(@Valid @RequestBody ContaCadastroDTO dto) {
-        
+        // Log do DTO recebido (ajuda no debug de payloads inválidos vindos do cliente)
+        System.out.println("[DEBUG] Recebido ContaCadastroDTO: " + dto);
+        // Validações simples para evitar NullPointerException e retornar 400 com mensagem útil
+        if (dto.getTipo() == null || dto.getTipo().trim().isEmpty()) {
+            throw new IllegalArgumentException("O campo 'tipo' é obrigatório e deve ser 'COMUM', 'POUPANCA' ou 'ESPECIAL'.");
+        }
+
         Conta novaConta;
-        
+
         // Lógica de mapeamento (DTO para Entidade)
         switch (dto.getTipo().toUpperCase()) {
             case "COMUM":
