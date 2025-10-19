@@ -32,8 +32,34 @@ const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () 
         await ContaApiService.sacar(numero.trim(), parsed);
         Alert.alert('Saque realizado', `Saque de R$ ${parsed.toFixed(2)} realizado na conta ${numero}`);
       } else {
-        await ContaApiService.depositar(numero.trim(), parsed);
-        Alert.alert('Depósito realizado', `Depósito de R$ ${parsed.toFixed(2)} realizado na conta ${numero}`);
+        // Antes de depositar, buscar a conta e confirmar titular com o usuário
+        try {
+          const conta = await ContaApiService.getConta(numero.trim());
+          Alert.alert(
+            'Confirmar Depósito',
+            `Titular: ${conta.titular}\nDeseja confirmar o depósito de R$ ${parsed.toFixed(2)} na conta ${numero}?`,
+            [
+              { text: 'Cancelar', style: 'cancel' },
+              {
+                text: 'Confirmar',
+                onPress: async () => {
+                  try {
+                    await ContaApiService.depositar(numero.trim(), parsed);
+                    // Buscar e exibir saldo atualizado
+                    const updated = await ContaApiService.getConta(numero.trim());
+                    Alert.alert('Depósito realizado', `Depósito de R$ ${parsed.toFixed(2)} realizado. Saldo atual: R$ ${Number(updated.saldo).toFixed(2)}`);
+                  } catch (err2: any) {
+                    const msg2 = err2?.response?.data?.message || err2?.message || 'Erro ao executar depósito';
+                    Alert.alert('Erro', msg2);
+                  }
+                }
+              }
+            ]
+          );
+        } catch (err2: any) {
+          const message = err2?.response?.data?.message || err2?.message || 'Conta não encontrada';
+          Alert.alert('Erro', message);
+        }
       }
       setNumero('');
       setValor('');
