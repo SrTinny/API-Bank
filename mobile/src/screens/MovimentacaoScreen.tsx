@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
 import { ContaApiService } from '../api/ContaApiService';
 
@@ -114,7 +115,7 @@ const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () 
     <View style={styles.container}>
       {onBack && (
         <View style={{ marginBottom: 8 }}>
-          <Button title="Voltar" onPress={onBack} />
+          <AppButton title="Voltar" onPress={onBack} variant="outline" />
         </View>
       )}
       <Text style={styles.title}>Movimentação</Text>
@@ -122,23 +123,16 @@ const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () 
   <AppInput label="Conta destino (para transferência)" placeholder="0000-0" value={destino} onChangeText={setDestino} />
       <AppInput label="Valor (R$)" placeholder="0.00" value={valor} onChangeText={setValor} keyboardType="numeric" />
 
-      <View style={styles.buttons}>
-        <View style={styles.button}>
-          <Button title={loading ? 'Processando...' : 'Sacar'} onPress={() => handleOperacao('saque')} disabled={loading} />
-        </View>
-        <View style={styles.button}>
-          <Button title={loading ? 'Processando...' : 'Depositar'} onPress={() => handleOperacao('deposito')} disabled={loading} />
-        </View>
-        <View style={styles.button}>
-          <Button title={loading ? 'Processando...' : 'Transferir'} onPress={handleTransferencia} disabled={loading} />
-        </View>
+      <View style={styles.buttonGrid}>
+        <AppButton style={styles.buttonItem} title={loading ? 'Processando...' : 'Sacar'} onPress={() => handleOperacao('saque')} loading={loading} variant="primary" />
+        <AppButton style={styles.buttonItem} title={loading ? 'Processando...' : 'Depositar'} onPress={() => handleOperacao('deposito')} loading={loading} variant="primary" />
+        <AppButton style={styles.buttonItem} title={loading ? 'Processando...' : 'Transferir'} onPress={handleTransferencia} loading={loading} variant="primary" />
       </View>
 
       <View style={{ height: 16 }} />
 
-      <View style={styles.buttons}>
-        <View style={styles.button}>
-          <Button title="Reajustar (Poupança)" onPress={async () => {
+      <View style={styles.buttonGrid}>
+  <AppButton style={styles.buttonItem} title="Reajustar (Poupança)" onPress={async () => {
             try {
               setLoading(true);
               await ContaApiService.reajustar(numero.trim(), 0.1);
@@ -147,10 +141,9 @@ const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () 
               const message = err?.response?.data?.message || err?.message || 'Erro ao reajustar';
               Alert.alert('Erro', message);
             } finally { setLoading(false); }
-          }} disabled={!numero.trim() || loading} />
-        </View>
-        <View style={styles.button}>
-          <Button title="Ver saldos" onPress={async () => {
+        }} disabled={!numero.trim() || loading} variant="outline" />
+
+        <AppButton title="Ver saldos" onPress={async () => {
             try {
               setLoading(true);
               const conta = await ContaApiService.getConta(numero.trim());
@@ -159,24 +152,21 @@ const MovimentacaoScreen: React.FC<{ navigation?: any; route?: any; onBack?: () 
               const message = err?.response?.data?.message || err?.message || 'Erro ao buscar saldo';
               Alert.alert('Erro', message);
             } finally { setLoading(false); }
-          }} disabled={!numero.trim() || loading} />
-        </View>
-        <View style={styles.button}>
-          <Button title="Finalizar" onPress={() => {
-            // volta para a tela de boas-vindas
-            if (navigation) navigation.navigate('Welcome');
-          }} />
-        </View>
+        } } disabled={!numero.trim() || loading} style={styles.buttonItem} variant="outline" />
+
+        <AppButton style={styles.buttonItem} title="Finalizar" onPress={() => {
+          if (navigation) navigation.navigate('Welcome');
+        }} variant="outline" />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
-  title: { fontSize: 20, fontWeight: '700', marginBottom: 12 },
-  buttons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18 },
-  button: { flex: 1, marginHorizontal: 6 },
+  container: { padding: 16, backgroundColor: '#FAFAFB', flex: 1 },
+  title: { fontSize: 20, fontWeight: '700', marginBottom: 12, color: '#0F172A' },
+  buttonGrid: { flexDirection: 'column', justifyContent: 'flex-start', marginTop: 12 },
+  buttonItem: { width: '100%', marginVertical: 8 },
 });
 
 export default MovimentacaoScreen;

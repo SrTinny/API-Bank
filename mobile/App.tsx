@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import AppButton from './src/components/AppButton';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -17,13 +18,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const WelcomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={styles.title}>Bem-vindo ao API Bank</Text>
-      <View style={styles.button}>
-        <Button title="Cadastrar Conta" onPress={() => navigation.navigate('Cadastrar')} />
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAFAFB' }}>
+      <Text style={styles.title}>API Bank</Text>
+      <View style={{ width: '80%', marginTop: 24 }}>
+        <AppButton title="Cadastrar Conta" onPress={() => navigation.navigate('Cadastrar')} />
       </View>
-      <View style={styles.button}>
-        <Button title="Ir para Operações" onPress={() => navigation.navigate('Movimentacao')} />
+      <View style={{ width: '80%', marginTop: 12 }}>
+        <AppButton title="Ir para Operações" onPress={() => navigation.navigate('Movimentacao')} />
       </View>
     </SafeAreaView>
   );
@@ -52,8 +53,8 @@ const App: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: '700', margin: 16 },
+  container: { flex: 1, backgroundColor: '#FAFAFB' },
+  title: { fontSize: 22, fontWeight: '700', margin: 16, color: '#0F172A' },
   button: { marginHorizontal: 16, marginVertical: 8 },
   screen: { flex: 1 },
 });

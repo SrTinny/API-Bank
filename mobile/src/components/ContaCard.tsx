@@ -36,11 +36,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginVertical: 8,
-    borderLeftWidth: 6,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
+    borderLeftWidth: 4,
+    borderLeftColor: '#E6E9EE',
+    shadowColor: 'transparent',
+    elevation: 0,
   },
   row: {
     flexDirection: 'row',
@@ -51,11 +50,11 @@ const styles = StyleSheet.create({
   titular: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#111827',
+    color: '#0F172A',
   },
   tipo: {
     fontSize: 12,
-    color: '#374151',
+    color: '#6B7280',
     fontWeight: '600',
   },
   numero: {
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
   saldo: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#111827',
+    color: '#0F172A',
   },
 });
 

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import AppButton from '../components/AppButton';
 import ContaCard from '../components/ContaCard';
 import { useContaStore } from '../context/useContaStore';
 import { IConta } from '../types/Conta';
@@ -19,9 +20,14 @@ const ContasListScreen: React.FC = () => {
   }, [call, setContas]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Contas</Text>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+  <SafeAreaView style={styles.container}>
+      <View style={{ padding: 16 }}>
+        <Text style={styles.title}>Contas</Text>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <View style={{ width: '100%', marginVertical: 12 }}>
+          <AppButton title="Atualizar" onPress={() => call().then((d) => d && setContas(d as any))} />
+        </View>
+      </View>
       <FlatList
         data={contas}
         keyExtractor={(item) => String(item.id ?? item.numero)}
@@ -35,8 +41,8 @@ const ContasListScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  title: { fontSize: 20, fontWeight: '700', padding: 16 },
+  container: { flex: 1, backgroundColor: '#FAFAFB' },
+  title: { fontSize: 20, fontWeight: '700', padding: 16, color: '#0F172A' },
   error: { color: '#DC2626', paddingHorizontal: 16 },
 });
 

@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 10,
     paddingHorizontal: 12,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E6E9EE',
-    color: '#111827',
+    borderColor: '#E5E7EB',
+    color: '#0F172A',
   },
 });
 

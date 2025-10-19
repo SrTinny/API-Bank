@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Alert, Platform } from 'react-native';
+import AppButton from '../components/AppButton';
 import { Picker } from '@react-native-picker/picker';
 import AppInput from '../components/AppInput';
 import { TipoConta } from '../types/bank';
@@ -61,7 +62,7 @@ const CadastrarContaScreen: React.FC<{ navigation?: any; onBack?: () => void }> 
     <View style={styles.container}>
       {onBack && (
         <View style={{ marginBottom: 8 }}>
-          <Button title="Voltar" onPress={onBack} />
+          <AppButton title="Voltar" onPress={onBack} />
         </View>
       )}
       <Text style={styles.title}>Cadastrar Conta</Text>
@@ -82,7 +83,7 @@ const CadastrarContaScreen: React.FC<{ navigation?: any; onBack?: () => void }> 
       )}
 
       <View style={styles.button}>
-        <Button title={loading ? 'Enviando...' : 'Cadastrar'} onPress={onSubmit} disabled={loading} />
+        <AppButton title={loading ? 'Enviando...' : 'Cadastrar'} onPress={onSubmit} loading={loading} />
       </View>
     </View>
   );
@@ -91,11 +92,14 @@ const CadastrarContaScreen: React.FC<{ navigation?: any; onBack?: () => void }> 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: '#FAFAFB',
+    flex: 1,
   },
   title: {
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 12,
+    color: '#0F172A',
   },
   label: {
     marginTop: 12,

@@ -6,28 +6,55 @@ type Props = {
   onPress?: () => void;
   loading?: boolean;
   style?: ViewStyle;
+  disabled?: boolean;
+  variant?: 'primary' | 'outline';
 };
 
-const AppButton: React.FC<Props> = ({ title, onPress, loading = false, style }) => {
+const AppButton: React.FC<Props> = ({ title, onPress, loading = false, style, disabled = false, variant = 'outline' }) => {
+  const isDisabled = disabled || loading === true;
+  const variantStyle = variant === 'primary' ? styles.buttonPrimary : styles.buttonOutline;
+  const textStyle = variant === 'primary' ? styles.textPrimary : styles.textOutline;
+
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={loading} activeOpacity={0.8}>
-      {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.text}>{title}</Text>}
+    <TouchableOpacity
+      style={[styles.button, variantStyle, style, isDisabled ? styles.buttonDisabled : null]}
+      onPress={onPress}
+      disabled={isDisabled}
+      activeOpacity={0.8}
+    >
+      {loading ? <ActivityIndicator color={variant === 'primary' ? '#fff' : '#111827'} /> : <Text style={textStyle}>{title}</Text>}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#2563EB',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  text: {
+  buttonPrimary: {
+    backgroundColor: '#111827',
+  },
+  buttonOutline: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  textPrimary: {
     color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 16,
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  textOutline: {
+    color: '#0F172A',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 });
 
